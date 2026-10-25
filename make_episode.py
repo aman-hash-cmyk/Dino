@@ -36,7 +36,7 @@ BIBLE = json.loads((ROOT / "characters.json").read_text(encoding="utf-8"))
 DATA_DIR = ROOT / "data"
 OUT_DIR = ROOT / "output"
 VOICE_DIR = Path(os.environ.get("PIPER_VOICE_DIR", ROOT / "voices"))
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")  # check AI Studio for current free models
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")  # check AI Studio for current free models
 GAP_SECONDS = 0.30          # pause between lines
 MAX_GENERATION_TRIES = 3
 
