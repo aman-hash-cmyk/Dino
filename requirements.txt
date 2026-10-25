@@ -1,0 +1,7 @@
+requests
+numpy
+Pillow
+piper-tts==1.2.0
+google-api-python-client
+google-auth
+google-auth-oauthlib
