@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "episode": 1,
+    "id": "2026-10-25_ep0001",
+    "date": "2026-10-25",
+    "topic": "Night and day: how did dinosaurs sleep?",
+    "title": "How Did Dinosaurs Sleep? | Dino Pals",
+    "fact": "Many dinosaurs like Maiasaura slept in big cozy groups called colonies to stay safe together.",
+    "characters": [
+      "dina",
+      "pip",
+      "rexy",
+      "sam",
+      "trixie"
+    ],
+    "segments": [
+      {
+        "segment": "title",
+        "start": 0.0,
+        "end": 0.0243
+      },
+      {
+        "segment": "intro",
+        "start": 0.0243,
+        "end": 0.205
+      },
+      {
+        "segment": "adventure",
+        "start": 0.2079,
+        "end": 0.5226
+      },
+      {
+        "segment": "fact",
+        "start": 0.5255,
+        "end": 0.7001
+      },
+      {
+        "segment": "song",
+        "start": 0.703,
+        "end": 0.8177
+      },
+      {
+        "segment": "outro",
+        "start": 0.8206,
+        "end": 0.9583
+      },
+      {
+        "segment": "end",
+        "start": 0.9611,
+        "end": 1.0
+      }
+    ],
+    "video_id": "iXm_mWSQEAk",
+    "url": "https://youtu.be/iXm_mWSQEAk",
+    "privacy": "private",
+    "uploaded_at": "2026-10-25T17:33:05Z"
+  }
+]
