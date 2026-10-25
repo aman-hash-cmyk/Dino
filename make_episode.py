@@ -82,12 +82,8 @@ def build_prompt(topic, history, insights, problems=None):
 
     hints = ""
     if insights:
-        hints = (
-            "\nWhat has worked well with viewers recently (use as gentle guidance, "
-            "do not copy old episodes):\n"
-            f"{json.dumps(insights, ensure_ascii=False)}\n"
-        )
-
+        hints = ("\nWhat has worked well with viewers recently (use as gentle guidance, "
+                 "do not copy old episodes):\n" + json.dumps(insights, ensure_ascii=False) + "\n")
     fix = ""
     if problems:
         fix = "\nYour previous attempt had these problems. Fix them:\n" + "\n".join(f"- {p}" for p in problems) + "\n"
@@ -110,6 +106,8 @@ STYLE RULES:
 Recent episode titles (do not repeat): {recent_titles}
 {hints}{fix}
 Backgrounds available (choose one per scene): {", ".join(BIBLE['backgrounds'])}
+Emotions: {", ".join(rules['emotions'])}
+Pictures for "show": {", ".join(rules['props'])}
 
 Return ONLY valid JSON in exactly this shape:
 {{
@@ -122,10 +120,14 @@ Return ONLY valid JSON in exactly this shape:
     {{
       "segment": "intro | adventure | fact | song | outro",
       "background": "one of the available backgrounds",
-      "lines": [ {{ "speaker": "character id", "text": "what they say" }} ]
+      "lines": [
+        {{ "speaker": "character id", "text": "what they say", "emotion": "happy | excited | surprised | silly",
+           "show": "a picture name or null", "pause": 0 }}
+      ]
     }}
   ]
-}}"""
+}}
+('pause' is 0 for normal lines, or 3 on lines where the viewer is asked to answer or do something.)"""
 
 
 # ----------------------------------------------------------------- Gemini
@@ -142,7 +144,12 @@ def call_gemini(prompt):
     }
     headers = {"Content-Type": "application/json", "x-goog-api-key": key}
     for attempt in range(4):
-        r = requests.post(url, headers=headers, json=body, timeout=300)
+        try:
+            r = requests.post(url, headers=headers, json=body, timeout=300)
+        except requests.exceptions.RequestException as e:
+            print('  network problem, retrying:', e)
+            time.sleep(5 * 2 ** attempt)
+            continue
         if r.status_code == 200:
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
             text = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.MULTILINE).strip()
@@ -155,6 +162,24 @@ def call_gemini(prompt):
 
 
 # ----------------------------------------------------------------- validation
+def normalise(script):
+    """Fill in / clamp the optional per-line fields so the video stage can rely on them."""
+    rules = BIBLE["rules"]
+    lo, hi = rules["pause_seconds"]
+    for scene in script.get("scenes", []) or []:
+        for line in scene.get("lines", []) or []:
+            if line.get("emotion") not in rules["emotions"]:
+                line["emotion"] = "happy"
+            if line.get("show") not in rules["props"]:
+                line["show"] = None
+            try:
+                p = float(line.get("pause") or 0)
+            except (TypeError, ValueError):
+                p = 0.0
+            line["pause"] = 0 if p <= 0 else min(max(p, lo), hi)
+    return script
+
+
 def validate(script):
     rules = BIBLE["rules"]
     problems = []
@@ -193,6 +218,13 @@ def validate(script):
             n_lines += 1
             n_words += len(text.split())
 
+    all_lines = [l for sc in script["scenes"] for l in sc.get("lines", [])]
+    pauses = sum(1 for l in all_lines if l.get("pause", 0) > 0)
+    shows = sum(1 for l in all_lines if l.get("show"))
+    if not (rules["min_pauses"] <= pauses <= rules["max_pauses"]):
+        problems.append(f"{pauses} interactive pauses; need {rules['min_pauses']} to {rules['max_pauses']} (pause = 3 on lines that ask the viewer to answer or do something)")
+    if shows > rules["max_props"]:
+        problems.append(f"{shows} pictures shown; at most {rules['max_props']}")
     for seg in segments_needed:
         if seg not in segments_seen:
             problems.append(f"missing segment: {seg}")
@@ -219,6 +251,7 @@ def generate_script(topic, history, insights, mock=False):
         except json.JSONDecodeError:
             problems = ["the reply was not valid JSON; return ONLY the JSON object"]
             continue
+        script = normalise(script)
         problems = validate(script)
         if not problems:
             return script
@@ -253,7 +286,7 @@ def write_silence(path, seconds, rate=22050):
 def voice_episode(script, ep_dir, mock=False):
     audio_dir = ep_dir / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
-    clips = []   # (path, scene_index, segment, background, speaker, text)
+    clips = []   # (path, scene_index, segment, background, line)
     n = 0
     for si, scene in enumerate(script["scenes"], 1):
         for line in scene["lines"]:
@@ -262,46 +295,55 @@ def voice_episode(script, ep_dir, mock=False):
             text = clean_for_tts(line["text"])
             print(f"  voicing {n}: {line['speaker']}")
             synthesize(text, BIBLE["characters"][line["speaker"]]["voice"], path, mock)
-            clips.append((path, si, scene["segment"], scene["background"], line["speaker"], line["text"]))
+            clips.append((path, si, scene["segment"], scene["background"], line))
 
-    # join clips + build timeline
     final_path = ep_dir / "episode_audio.wav"
     timeline, cursor = [], 0.0
     with wave.open(str(clips[0][0]), "rb") as first:
         params = first.getparams()
-    gap_frames = b"\x00" * (int(params.framerate * GAP_SECONDS) * params.sampwidth * params.nchannels)
+
+    def silence(seconds):
+        return b"\x00" * (int(params.framerate * seconds) * params.sampwidth * params.nchannels)
 
     with wave.open(str(final_path), "wb") as out:
         out.setparams(params)
-        for idx, (path, si, seg, bg, speaker, text) in enumerate(clips, 1):
+        for idx, (path, si, seg, bg, line) in enumerate(clips, 1):
             with wave.open(str(path), "rb") as w:
                 if (w.getframerate(), w.getsampwidth(), w.getnchannels()) != \
                         (params.framerate, params.sampwidth, params.nchannels):
                     sys.exit("Voice models use different audio formats; use the same model family for all characters.")
                 frames = w.readframes(w.getnframes())
                 dur = w.getnframes() / w.getframerate()
+            pause = float(line.get("pause") or 0)
+            gap = GAP_SECONDS + pause
             out.writeframes(frames)
-            out.writeframes(gap_frames)
+            out.writeframes(silence(gap))
             timeline.append({
                 "index": idx, "scene": si, "segment": seg, "background": bg,
-                "speaker": speaker, "text": text,
+                "speaker": line["speaker"], "text": line["text"],
+                "emotion": line.get("emotion", "happy"), "show": line.get("show"), "pause": pause,
                 "start": round(cursor, 3), "end": round(cursor + dur, 3),
             })
-            cursor += dur + GAP_SECONDS
+            cursor += dur + gap
     return timeline, cursor
 
 
 # ----------------------------------------------------------------- mock (plumbing test only)
 def mock_script(topic):
     ids = list(BIBLE["characters"])
-    seg_plan = [("intro", "jungle", 4), ("adventure", "river", 8), ("fact", "museum", 4),
-                ("song", "sky", 4), ("outro", "nest", 4)]
+    emos = BIBLE["rules"]["emotions"]
+    props = BIBLE["rules"]["props"]
+    seg_plan = [("intro", "jungle", 5), ("adventure", "river", 10), ("fact", "museum", 5),
+                ("song", "sky", 7), ("outro", "nest", 5)]
     scenes, k = [], 0
     for seg, bg, count in seg_plan:
         lines = []
         for _ in range(count):
             lines.append({"speaker": ids[k % len(ids)],
-                          "text": "This is a test line about dinosaurs that is long enough to count as real words for the check."})
+                          "text": "This is a test line about dinosaurs that is long enough to count as real words for the check.",
+                          "emotion": emos[k % len(emos)],
+                          "show": props[(k // 3) % len(props)] if k % 3 == 0 else None,
+                          "pause": 3 if k in (4, 9, 14, 20) else 0})
             k += 1
         scenes.append({"segment": seg, "background": bg, "lines": lines})
     scenes[-1]["lines"][-1]["text"] = BIBLE["series"]["daily_signoff"] + " Bye bye everyone, and keep on exploring with us!"

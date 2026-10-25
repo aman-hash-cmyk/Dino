@@ -5,10 +5,15 @@
     "audience": "kids aged 3 to 7",
     "language": "English",
     "episode_length_minutes": "3 to 4",
-    "segments_in_order": ["intro", "adventure", "fact", "song", "outro"],
+    "segments_in_order": [
+      "intro",
+      "adventure",
+      "fact",
+      "song",
+      "outro"
+    ],
     "daily_signoff": "See you tomorrow, Dino Pals!"
   },
-
   "characters": {
     "rexy": {
       "name": "Rexy",
@@ -16,7 +21,11 @@
       "personality": "Brave, clumsy and big-hearted. Tries to roar fiercely but often trips over his own tail. Loves learning new things.",
       "catchphrase": "Rawr-some!",
       "color": "#E4572E",
-      "voice": { "model": "en_US-libritts_r-medium", "speaker": 21, "length_scale": 1.05 }
+      "voice": {
+        "model": "en_US-libritts_r-medium",
+        "speaker": 21,
+        "length_scale": 1.05
+      }
     },
     "trixie": {
       "name": "Trixie",
@@ -24,7 +33,11 @@
       "personality": "Clever, kind and calm. The problem solver who thinks before acting and always includes everyone.",
       "catchphrase": "Let's think about it together!",
       "color": "#2E86AB",
-      "voice": { "model": "en_US-libritts_r-medium", "speaker": 150, "length_scale": 1.0 }
+      "voice": {
+        "model": "en_US-libritts_r-medium",
+        "speaker": 150,
+        "length_scale": 1.0
+      }
     },
     "sam": {
       "name": "Stego Sam",
@@ -32,7 +45,11 @@
       "personality": "Sleepy, funny and loves snacks. Makes silly jokes and takes naps at the worst moments.",
       "catchphrase": "Yawn... I mean, yay!",
       "color": "#76B041",
-      "voice": { "model": "en_US-libritts_r-medium", "speaker": 300, "length_scale": 1.2 }
+      "voice": {
+        "model": "en_US-libritts_r-medium",
+        "speaker": 300,
+        "length_scale": 1.2
+      }
     },
     "pip": {
       "name": "Pip",
@@ -40,7 +57,11 @@
       "personality": "Tiny, fast-talking and endlessly curious. Asks lots of questions and sees everything from the sky.",
       "catchphrase": "Whoosh, whoosh, why? Why? Why?",
       "color": "#F6AE2D",
-      "voice": { "model": "en_US-libritts_r-medium", "speaker": 450, "length_scale": 0.9 }
+      "voice": {
+        "model": "en_US-libritts_r-medium",
+        "speaker": 450,
+        "length_scale": 0.9
+      }
     },
     "dina": {
       "name": "Dr. Dina",
@@ -48,30 +69,81 @@
       "personality": "Cheerful scientist with a magic fossil brush. Explains one real dinosaur fact per episode in a simple, friendly way.",
       "catchphrase": "Fossil-tastic!",
       "color": "#9B5DE5",
-      "voice": { "model": "en_US-libritts_r-medium", "speaker": 600, "length_scale": 1.0 }
+      "voice": {
+        "model": "en_US-libritts_r-medium",
+        "speaker": 600,
+        "length_scale": 1.0
+      }
     }
   },
-
-  "backgrounds": ["jungle", "volcano", "beach", "nest", "museum", "sky", "cave", "river"],
-
+  "backgrounds": [
+    "jungle",
+    "volcano",
+    "beach",
+    "nest",
+    "museum",
+    "sky",
+    "cave",
+    "river"
+  ],
   "rules": {
-    "min_lines": 20,
-    "max_lines": 70,
-    "min_words": 350,
-    "max_words": 800,
-    "max_chars_per_line": 240,
-    "banned_words": ["kill", "blood", "gun", "hate", "stupid", "dumb", "shut up", "hell", "damn"],
+    "min_lines": 28,
+    "max_lines": 85,
+    "min_words": 300,
+    "max_words": 750,
+    "max_chars_per_line": 200,
+    "banned_words": [
+      "kill",
+      "blood",
+      "gun",
+      "hate",
+      "stupid",
+      "dumb",
+      "shut up",
+      "hell",
+      "damn"
+    ],
     "style": [
-      "Warm, playful and gentle. No scary or violent moments. Predators are never cruel; problems are solved with teamwork, kindness and curiosity.",
-      "Short sentences and simple words a 5-year-old understands.",
-      "Each episode teaches exactly ONE real, scientifically accurate dinosaur fact, stated simply. If unsure of a fact, choose a different fact you are certain about.",
-      "Include a short, rhyming, repeatable song or chant (4 to 8 lines) in the 'song' segment.",
-      "Characters keep their personalities and catchphrases. Use each catchphrase at most once per episode.",
-      "Ask the viewer a simple question or invite them to repeat a word or move along, so kids can join in.",
+      "Write like a hit preschool show: warm, funny, musical and full of energy. Very short lines (mostly under 12 words) and simple words a 4-year-old knows.",
+      "Use sound words and rhythm ('Stomp, stomp, stomp!', 'Whoosh!', 'Splash!') and phrases kids can repeat. Repeat the key fact word several times.",
+      "Make it INTERACTIVE: 3 to 6 times, a character asks the viewer to do or answer something simple ('Can you roar like Rexy?', 'Let us count the eggs: 1, 2, 3!', 'Which one is the leaf?'). On exactly those lines set pause to 3 (seconds of waiting). The NEXT line must warmly react to the viewer ('Great roaring!', 'You are so smart!').",
+      "Tell a tiny story: a small, friendly problem, the friends solve it with teamwork and kindness, and one funny moment (Sam napping at the wrong time, Pip asking 'why?', Rexy tripping over his tail).",
+      "Give every line an emotion: happy, excited, surprised or silly. Use 'surprised' and 'excited' for discoveries and big moments, 'silly' for jokes.",
+      "When a line names something that can be shown, set show to one picture (leaf, egg, bone, footprint, fish, tooth, star, heart, rock, feather, flower, sun). Use it on at most 9 lines in the whole episode.",
+      "Teach exactly ONE real, scientifically accurate dinosaur fact, stated simply by Dr. Dina in the 'fact' segment, then repeated in a playful way by a friend. If unsure of a fact, pick a different fact you are certain about.",
+      "The 'song' segment is a 6 to 10 line bouncy rhyming chant about the fact. Lines are short, rhyme in pairs, and the chorus lines repeat. Several characters take turns.",
+      "Keep every character true to their personality. Use each catchphrase at most once per episode.",
+      "Warm, gentle and positive. Nothing scary or violent. Predators are never cruel. Problems are solved with teamwork, kindness and curiosity.",
       "End every episode with the daily sign-off."
-    ]
+    ],
+    "emotions": [
+      "happy",
+      "excited",
+      "surprised",
+      "silly"
+    ],
+    "props": [
+      "leaf",
+      "egg",
+      "bone",
+      "footprint",
+      "fish",
+      "tooth",
+      "star",
+      "heart",
+      "rock",
+      "feather",
+      "flower",
+      "sun"
+    ],
+    "min_pauses": 3,
+    "max_pauses": 6,
+    "pause_seconds": [
+      2,
+      4
+    ],
+    "max_props": 9
   },
-
   "topic_pool": [
     "How big was a T. rex really?",
     "Why did Triceratops have three horns?",

@@ -28,6 +28,17 @@ def build(ep_id):
     main = ranked[0]
     second = ranked[1] if len(ranked) > 1 else None
 
+    # sunburst behind the main character
+    rays = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    rd = ImageDraw.Draw(rays)
+    cx, cy = W - 330, H - 330
+    import math
+    for i in range(16):
+        a0, a1 = math.radians(i * 22.5), math.radians(i * 22.5 + 11)
+        rd.polygon([(cx, cy), (cx + 1200 * math.cos(a0), cy + 1200 * math.sin(a0)),
+                    (cx + 1200 * math.cos(a1), cy + 1200 * math.sin(a1))], fill=(255, 245, 160, 110))
+    img.paste(rays, (0, 0), rays)
+
     big = sprite(main, "open", 700)
     img.paste(big, (W - 700 + 40, H - 700 + 70), big)
     if second:
