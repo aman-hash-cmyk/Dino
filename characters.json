@@ -1,0 +1,97 @@
+{
+  "series": {
+    "title": "Dino Pals",
+    "tagline": "Learn something new with your dinosaur friends every day!",
+    "audience": "kids aged 3 to 7",
+    "language": "English",
+    "episode_length_minutes": "3 to 4",
+    "segments_in_order": ["intro", "adventure", "fact", "song", "outro"],
+    "daily_signoff": "See you tomorrow, Dino Pals!"
+  },
+
+  "characters": {
+    "rexy": {
+      "name": "Rexy",
+      "species": "Tyrannosaurus rex",
+      "personality": "Brave, clumsy and big-hearted. Tries to roar fiercely but often trips over his own tail. Loves learning new things.",
+      "catchphrase": "Rawr-some!",
+      "color": "#E4572E",
+      "voice": { "model": "en_US-libritts_r-medium", "speaker": 21, "length_scale": 1.05 }
+    },
+    "trixie": {
+      "name": "Trixie",
+      "species": "Triceratops",
+      "personality": "Clever, kind and calm. The problem solver who thinks before acting and always includes everyone.",
+      "catchphrase": "Let's think about it together!",
+      "color": "#2E86AB",
+      "voice": { "model": "en_US-libritts_r-medium", "speaker": 150, "length_scale": 1.0 }
+    },
+    "sam": {
+      "name": "Stego Sam",
+      "species": "Stegosaurus",
+      "personality": "Sleepy, funny and loves snacks. Makes silly jokes and takes naps at the worst moments.",
+      "catchphrase": "Yawn... I mean, yay!",
+      "color": "#76B041",
+      "voice": { "model": "en_US-libritts_r-medium", "speaker": 300, "length_scale": 1.2 }
+    },
+    "pip": {
+      "name": "Pip",
+      "species": "Baby Pterodactyl",
+      "personality": "Tiny, fast-talking and endlessly curious. Asks lots of questions and sees everything from the sky.",
+      "catchphrase": "Whoosh, whoosh, why? Why? Why?",
+      "color": "#F6AE2D",
+      "voice": { "model": "en_US-libritts_r-medium", "speaker": 450, "length_scale": 0.9 }
+    },
+    "dina": {
+      "name": "Dr. Dina",
+      "species": "Kid paleontologist (human)",
+      "personality": "Cheerful scientist with a magic fossil brush. Explains one real dinosaur fact per episode in a simple, friendly way.",
+      "catchphrase": "Fossil-tastic!",
+      "color": "#9B5DE5",
+      "voice": { "model": "en_US-libritts_r-medium", "speaker": 600, "length_scale": 1.0 }
+    }
+  },
+
+  "backgrounds": ["jungle", "volcano", "beach", "nest", "museum", "sky", "cave", "river"],
+
+  "rules": {
+    "min_lines": 20,
+    "max_lines": 70,
+    "min_words": 350,
+    "max_words": 800,
+    "max_chars_per_line": 240,
+    "banned_words": ["kill", "blood", "gun", "hate", "stupid", "dumb", "shut up", "hell", "damn"],
+    "style": [
+      "Warm, playful and gentle. No scary or violent moments. Predators are never cruel; problems are solved with teamwork, kindness and curiosity.",
+      "Short sentences and simple words a 5-year-old understands.",
+      "Each episode teaches exactly ONE real, scientifically accurate dinosaur fact, stated simply. If unsure of a fact, choose a different fact you are certain about.",
+      "Include a short, rhyming, repeatable song or chant (4 to 8 lines) in the 'song' segment.",
+      "Characters keep their personalities and catchphrases. Use each catchphrase at most once per episode.",
+      "Ask the viewer a simple question or invite them to repeat a word or move along, so kids can join in.",
+      "End every episode with the daily sign-off."
+    ]
+  },
+
+  "topic_pool": [
+    "How big was a T. rex really?",
+    "Why did Triceratops have three horns?",
+    "What did Stegosaurus use its back plates for?",
+    "How did pterosaurs fly?",
+    "Dinosaur babies: how do eggs and nests work?",
+    "What did plant-eating dinosaurs eat for lunch?",
+    "How do we know about dinosaurs? Fossils explained",
+    "The fastest dinosaurs",
+    "The longest dinosaur necks (Brachiosaurus)",
+    "Dinosaur colors: did dinosaurs have feathers?",
+    "Swimming reptiles that lived with dinosaurs",
+    "Which dinosaurs lived in herds?",
+    "Dinosaur teeth: sharp, flat and everything between",
+    "What happened when the dinosaurs went extinct, and what became of their relatives (birds)?",
+    "Velociraptor: smaller than you think!",
+    "Ankylosaurus and its tail club",
+    "Spinosaurus: the dinosaur that loved fish",
+    "How loud was a dinosaur roar? What we can guess from fossils",
+    "Dinosaur footprints: reading tracks in the mud",
+    "Night and day: how did dinosaurs sleep?"
+  ]
+}
