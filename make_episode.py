@@ -36,9 +36,9 @@ BIBLE = json.loads((ROOT / "characters.json").read_text(encoding="utf-8"))
 DATA_DIR = ROOT / "data"
 OUT_DIR = ROOT / "output"
 VOICE_DIR = Path(os.environ.get("PIPER_VOICE_DIR", ROOT / "voices"))
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")  # check AI Studio for current free models
+MODELS = [m.strip() for m in os.environ.get("GEMINI_MODELS", "gemini-3.5-flash-lite,gemini-3.8-flash").split(",") if m.strip()]   # tried in order
 GAP_SECONDS = 0.30          # pause between lines
-MAX_GENERATION_TRIES = 3
+TRIES_PER_MODEL = 2
 
 
 # ----------------------------------------------------------------- small helpers
@@ -131,13 +131,13 @@ Return ONLY valid JSON in exactly this shape:
 
 
 # ----------------------------------------------------------------- Gemini
-def call_gemini(prompt):
+def call_gemini(prompt, model):
     import requests  # imported here so --mock works without it
 
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
         sys.exit("GEMINI_API_KEY is not set.")
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"responseMimeType": "application/json", "temperature": 0.9},
@@ -177,7 +177,36 @@ def normalise(script):
             except (TypeError, ValueError):
                 p = 0.0
             line["pause"] = 0 if p <= 0 else min(max(p, lo), hi)
+    add_missing_pauses(script)
     return script
+
+
+ASK = re.compile(r"\b(can you|can we|let'?s|count|show me|say it|repeat|clap|stomp|roar|help us|your turn|what is|which)\b", re.I)
+
+
+def add_missing_pauses(script):
+    """If the writer forgot some 'your turn' moments, add them on question-like lines."""
+    rules = BIBLE["rules"]
+    flat = [(sc.get("segment"), l) for sc in script.get("scenes", []) for l in sc.get("lines", [])]
+    have = [l for _, l in flat if l["pause"] > 0]
+    if len(have) > rules["max_pauses"]:                      # too many: keep the first few
+        for l in have[rules["max_pauses"]:]:
+            l["pause"] = 0
+        return
+    target = min(4, rules["max_pauses"])                     # aim for about 4 interactive moments
+    if len(have) >= target:
+        return
+    need = target - len(have)
+    body = flat[1:-1]                                         # not the very first / last line
+    q = [l for seg, l in body if seg != "song" and l["pause"] == 0 and l["text"].strip().endswith("?")]
+    other = [l for seg, l in body if seg != "song" and l["pause"] == 0 and l not in q and ASK.search(l["text"])]
+    cands = q + other
+    if not cands:
+        return
+    cands.sort(key=lambda l: next(i for i, (_, x) in enumerate(flat) if x is l))
+    picks = cands if len(cands) <= need else [cands[int(i * len(cands) / need)] for i in range(need)]
+    for l in picks:
+        l["pause"] = float(rules["pause_seconds"][0] + 1)
 
 
 def validate(script):
@@ -243,19 +272,24 @@ def validate(script):
 def generate_script(topic, history, insights, mock=False):
     if mock:
         return mock_script(topic)
+    import requests
     problems = None
-    for attempt in range(1, MAX_GENERATION_TRIES + 1):
-        print(f"Generating script (attempt {attempt}) ...")
-        try:
-            script = call_gemini(build_prompt(topic, history, insights, problems))
-        except json.JSONDecodeError:
-            problems = ["the reply was not valid JSON; return ONLY the JSON object"]
-            continue
-        script = normalise(script)
-        problems = validate(script)
-        if not problems:
-            return script
-        print("  rejected:", "; ".join(problems[:5]))
+    for model in MODELS:
+        for attempt in range(1, TRIES_PER_MODEL + 1):
+            print(f"Generating script with {model} (attempt {attempt}) ...")
+            try:
+                script = call_gemini(build_prompt(topic, history, insights, problems), model)
+            except json.JSONDecodeError:
+                problems = ["the reply was not valid JSON; return ONLY the JSON object"]
+                continue
+            except requests.exceptions.HTTPError as e:
+                print(f"  {model} failed ({e}); trying the next model")
+                break
+            script = normalise(script)
+            problems = validate(script)
+            if not problems:
+                return script
+            print("  rejected:", "; ".join(problems[:5]))
     sys.exit("Could not get a valid script. Nothing was published or saved.")
 
 
