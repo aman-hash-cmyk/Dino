@@ -54,5 +54,61 @@
     "url": "https://youtu.be/iXm_mWSQEAk",
     "privacy": "private",
     "uploaded_at": "2026-10-25T17:33:05Z"
+  },
+  {
+    "episode": 2,
+    "id": "2026-10-25_ep0002",
+    "date": "2026-10-25",
+    "topic": "How do we know about dinosaurs? Fossils explained",
+    "title": "How Do We Know About Dinosaurs? Fossils Explained | Dino Pals",
+    "fact": "Fossils are the hard parts of animals, like bones and teeth, that turned into rock over millions of years.",
+    "characters": [
+      "dina",
+      "pip",
+      "rexy",
+      "sam",
+      "trixie"
+    ],
+    "segments": [
+      {
+        "segment": "title",
+        "start": 0.0,
+        "end": 0.028
+      },
+      {
+        "segment": "intro",
+        "start": 0.028,
+        "end": 0.1915
+      },
+      {
+        "segment": "adventure",
+        "start": 0.1949,
+        "end": 0.4727
+      },
+      {
+        "segment": "fact",
+        "start": 0.476,
+        "end": 0.7045
+      },
+      {
+        "segment": "song",
+        "start": 0.7078,
+        "end": 0.8184
+      },
+      {
+        "segment": "outro",
+        "start": 0.8217,
+        "end": 0.9518
+      },
+      {
+        "segment": "end",
+        "start": 0.9552,
+        "end": 1.0
+      }
+    ],
+    "video_id": "2GgXjP4zm7g",
+    "url": "https://youtu.be/2GgXjP4zm7g",
+    "privacy": "private",
+    "uploaded_at": "2026-10-25T20:17:02Z"
   }
 ]
