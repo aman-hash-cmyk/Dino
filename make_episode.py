@@ -36,7 +36,7 @@ BIBLE = json.loads((ROOT / "characters.json").read_text(encoding="utf-8"))
 DATA_DIR = ROOT / "data"
 OUT_DIR = ROOT / "output"
 VOICE_DIR = Path(os.environ.get("PIPER_VOICE_DIR", ROOT / "voices"))
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")  # check AI Studio for current free models
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")  # check AI Studio for current free models
 GAP_SECONDS = 0.30          # pause between lines
 MAX_GENERATION_TRIES = 3
 
@@ -142,7 +142,7 @@ def call_gemini(prompt):
     }
     headers = {"Content-Type": "application/json", "x-goog-api-key": key}
     for attempt in range(4):
-        r = requests.post(url, headers=headers, json=body, timeout=120)
+        r = requests.post(url, headers=headers, json=body, timeout=300)
         if r.status_code == 200:
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
             text = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.MULTILINE).strip()
