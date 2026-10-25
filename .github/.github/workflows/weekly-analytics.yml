@@ -1,0 +1,38 @@
+name: weekly-analytics
+
+on:
+  schedule:
+    - cron: "0 5 * * 1"        # every Monday 05:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dino-pipeline
+  cancel-in-progress: false
+
+jobs:
+  analytics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install google-api-python-client google-auth
+      - run: python analytics.py
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+      - name: Save insights
+        run: |
+          git config user.name "dino-bot"
+          git config user.email "dino-bot@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "Weekly insights"
+          git pull --rebase
+          git push
