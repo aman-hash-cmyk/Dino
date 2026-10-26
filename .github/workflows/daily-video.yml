@@ -1,12 +1,13 @@
+
 name: daily-video
 
 on:
   schedule:
-    - cron: "30 10 * * *"      # 10:30 UTC = 4:00 PM India time. Change to suit you.
-  workflow_dispatch:           # lets you press "Run workflow" manually
+    - cron: "30 10 * * *"
+  workflow_dispatch:
 
 permissions:
-  contents: write              # needed to save episode history back to the repo
+  contents: write
 
 concurrency:
   group: dino-pipeline
@@ -16,18 +17,24 @@ jobs:
   make-and-upload:
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
 
       - name: Install ffmpeg and fonts
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
 
-      - run: pip install -r requirements.txt
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
 
       - name: Cache Piper voice
         uses: actions/cache@v4
@@ -35,7 +42,37 @@ jobs:
           path: voices
           key: piper-voice-libritts-r-medium-v1
 
-      - run: python tools/download_voice.py
+      - name: Download Piper voice
+        run: python tools/download_voice.py
+
+      - name: Configure and verify Piper voice
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VOICE_PATH="$(find "$GITHUB_WORKSPACE/voices" \
+            -type f -name '*.onnx' -print -quit)"
+
+          if [ -z "$VOICE_PATH" ]; then
+            echo "::error::No Piper .onnx model found in voices/."
+            exit 1
+          fi
+
+          if [ ! -f "${VOICE_PATH}.json" ]; then
+            echo "::error::Missing voice configuration: ${VOICE_PATH}.json"
+            exit 1
+          fi
+
+          echo "PIPER_VOICE=$VOICE_PATH" >> "$GITHUB_ENV"
+          echo "Piper model configured: $VOICE_PATH"
+
+      - name: Verify Piper environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "PIPER_VOICE=$PIPER_VOICE"
+          test -f "$PIPER_VOICE"
+          test -f "${PIPER_VOICE}.json"
 
       - name: Make and upload today's episode
         run: python run_daily.py
@@ -47,6 +84,7 @@ jobs:
           UPLOAD_PRIVACY: ${{ vars.UPLOAD_PRIVACY || 'private' }}
 
       - name: Save episode history
+        if: success()
         run: |
           git config user.name "dino-bot"
           git config user.email "dino-bot@users.noreply.github.com"
