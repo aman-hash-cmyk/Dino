@@ -107,12 +107,19 @@ Do not add markdown fences. Keep the entire script under 55 segments.
 The episode title is "10 Little Dinosaurs". Number words should be spoken clearly.
 Dinosaur names and pluralization should be easy to pronounce.
 """
-    response = genai.Client(api_key=api_key).models.generate_content(
-        model=model,
-        contents=prompt,
-        config={"response_mime_type": "application/json"},
-    )
+    
+    client = genai.Client(api_key=api_key)
+    try:
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config={"response_mime_type": "application/json"},
+        )
+    finally:
+        client.close()
+
     raw = response.text or ""
+
     try:
         data = json.loads(raw)
     except json.JSONDecodeError as exc:
