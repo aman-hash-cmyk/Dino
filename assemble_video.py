@@ -21,6 +21,7 @@ import random
 import subprocess
 import sys
 import wave
+import argparse
 from pathlib import Path
 
 import numpy as np
@@ -490,7 +491,38 @@ def build(ep_id):
     print(f"Video ready: {ep_dir / 'video.mp4'} ({total / 60:.1f} min)")
 
 
-if __name__ == "__main__":
-    ep = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else \
-        (OUT_DIR / "latest.txt").read_text().strip()
+def main():
+    parser = argparse.ArgumentParser(
+        description="Render a Dino Pals episode."
+    )
+    parser.add_argument(
+        "episode_id", nargs="?",
+        help="Episode ID; defaults to output/latest.txt"
+    )
+    parser.add_argument("--width", type=int, default=1280)
+    parser.add_argument("--height", type=int, default=720)
+    parser.add_argument("--fps", type=int, default=24)
+    parser.add_argument("--title-seconds", type=float, default=2.5)
+    parser.add_argument("--end-seconds", type=float, default=4.0)
+    args = parser.parse_args()
+
+    if args.width < 320 or args.height < 320:
+        parser.error("Width and height must each be at least 320.")
+    if args.fps < 1 or args.fps > 60:
+        parser.error("FPS must be between 1 and 60.")
+    if args.title_seconds < 0 or args.end_seconds < 0:
+        parser.error("Card durations cannot be negative.")
+
+    global W, H, FPS, LEAD, TAIL
+    W, H, FPS = args.width, args.height, args.fps
+    LEAD, TAIL = args.title_seconds, args.end_seconds
+
+    ep = args.episode_id
+    if not ep:
+        ep = (OUT_DIR / "latest.txt").read_text().strip()
+
     build(ep)
+
+
+if __name__ == "__main__":
+    main()
