@@ -22,7 +22,17 @@ def run(*args):
 
 def main():
     mock = "--mock" in sys.argv
+    
+try:
     run("make_episode.py", *(["--mock"] if mock else []))
+except subprocess.CalledProcessError:
+    print("Gemini generation failed. Falling back to built-in lyrics...")
+    run(
+        "make_episode.py",
+        "--skip-gemini",
+        *(["--mock"] if mock else []),
+    )
+
     ep = (OUT_DIR / "latest.txt").read_text().strip()
     run("assemble_video.py", ep)
     run("make_thumbnail.py", ep)
