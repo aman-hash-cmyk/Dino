@@ -113,6 +113,9 @@ Dinosaur names and pluralization should be easy to pronounce.
 response = None
 
 for attempt in range(3):
+   response = None
+
+for attempt in range(3):
     client = genai.Client(api_key=api_key)
     try:
         response = client.models.generate_content(
@@ -132,10 +135,6 @@ for attempt in range(3):
         time.sleep(2 ** (attempt + 1))
     finally:
         client.close()
-
-    finally:
-        client.close()
-
     raw = response.text or ""
 
     try:
