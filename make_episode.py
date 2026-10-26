@@ -25,6 +25,7 @@ import shutil
 import subprocess
 import sys
 import wave
+import time
 from pathlib import Path
 from typing import Any
 
@@ -108,6 +109,10 @@ The episode title is "10 Little Dinosaurs". Number words should be spoken clearl
 Dinosaur names and pluralization should be easy to pronounce.
 """
     
+    
+response = None
+
+for attempt in range(3):
     client = genai.Client(api_key=api_key)
     try:
         response = client.models.generate_content(
@@ -115,6 +120,19 @@ Dinosaur names and pluralization should be easy to pronounce.
             contents=prompt,
             config={"response_mime_type": "application/json"},
         )
+        break
+    except Exception as exc:
+        if attempt == 2:
+            raise
+
+        print(
+            f"Gemini request failed (attempt {attempt + 1}/3): {exc}. "
+            "Retrying..."
+        )
+        time.sleep(2 ** (attempt + 1))
+    finally:
+        client.close()
+
     finally:
         client.close()
 
