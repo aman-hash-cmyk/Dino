@@ -35,7 +35,7 @@ DINOSAURS = [
     {"name": "Brontosaurus", "color": "friendly teal", "action": "stretch their long necks to nibble leaves"},
     {"name": "Tyrannosaurus Rex", "color": "warm orange", "action": "take tiny gentle stomps and smile"},
 ]
-DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 
 def parse_args() -> argparse.Namespace:
