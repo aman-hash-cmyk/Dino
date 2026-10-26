@@ -35,7 +35,10 @@ def main():
             if h.get("id") == ep:
                 h["segments"] = segs
         HISTORY.write_text(json.dumps(history, indent=2, ensure_ascii=False), encoding="utf-8")
-run("validate_episode.py", ep)
+
+    # Stop the pipeline if the generated episode fails validation.
+    run("validate_episode.py", ep)
+
     run("upload_youtube.py", ep, *(["--dry-run"] if mock else []))
     print("\nAll done:", ep)
 
