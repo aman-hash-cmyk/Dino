@@ -10,7 +10,7 @@ Environment:
   GEMINI_API_KEY=...
   PIPER_VOICE=/path/to/en_US-lessac-medium.onnx
   PIPER_CONFIG=/path/to/en_US-lessac-medium.onnx.json  # optional
-  GEMINI_MODEL=gemini-2.5-flash  # optional
+  GEMINI_MODEL=gemini-3.8-flash  # optional
 
 Install:
   pip install google-genai
