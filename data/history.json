@@ -110,5 +110,61 @@
     "url": "https://youtu.be/2GgXjP4zm7g",
     "privacy": "private",
     "uploaded_at": "2026-10-25T20:17:02Z"
+  },
+  {
+    "episode": 3,
+    "id": "2026-10-26_ep0003",
+    "date": "2026-10-26",
+    "topic": "Dinosaur colors: did dinosaurs have feathers?",
+    "title": "Did Dinosaurs Have Feathers? Dinosaur Colors! | Dino Pals",
+    "fact": "Many dinosaurs had fluffy feathers instead of scales, just like modern birds!",
+    "characters": [
+      "dina",
+      "pip",
+      "rexy",
+      "sam",
+      "trixie"
+    ],
+    "segments": [
+      {
+        "segment": "title",
+        "start": 0.0,
+        "end": 0.029
+      },
+      {
+        "segment": "intro",
+        "start": 0.029,
+        "end": 0.2226
+      },
+      {
+        "segment": "adventure",
+        "start": 0.2261,
+        "end": 0.4512
+      },
+      {
+        "segment": "fact",
+        "start": 0.4547,
+        "end": 0.6471
+      },
+      {
+        "segment": "song",
+        "start": 0.6506,
+        "end": 0.7642
+      },
+      {
+        "segment": "outro",
+        "start": 0.7677,
+        "end": 0.9501
+      },
+      {
+        "segment": "end",
+        "start": 0.9536,
+        "end": 1.0
+      }
+    ],
+    "video_id": "M4yIewrU6z8",
+    "url": "https://youtu.be/M4yIewrU6z8",
+    "privacy": "private",
+    "uploaded_at": "2026-10-26T04:28:51Z"
   }
 ]
