@@ -156,7 +156,7 @@ def render(sections, total):
 
 
 # ---------------------------------------------------------------- sound effects
-def sfx(name):
+def sfx(name, seed=0):
     if name == "pop":
         n = int(0.12 * SR)
         t = np.arange(n) / SR
@@ -183,4 +183,84 @@ def sfx(name):
         put(buf, tone(midi(88), 0.6, "bell", 5, 0.4), 0)
         put(buf, tone(midi(95), 0.6, "bell", 5, 0.3), 0.12 * SR)
         return buf
+    a = _more_sfx(name, seed)
+    pk = float(np.max(np.abs(a))) or 1.0
+    return a * (0.8 / pk) if pk > 0.8 else a
+
+
+# ---------------------------------------------------------------- voice-like sounds (choir, giggles)
+VOWELS = {"a": (800, 1150, 2900), "e": (350, 2200, 2900), "i": (300, 2300, 3000),
+          "o": (500, 900, 2800), "u": (330, 870, 2250)}
+
+
+def voice_synth(f0, dur, vowel="a", vib=5.5, vol=1.0, attack=0.03, release=0.08):
+    """A simple 'ooh/aah' singing voice: harmonics shaped by vowel formants."""
+    n = max(8, int(dur * SR))
+    t = np.arange(n) / SR
+    f = f0 * (1 + 0.008 * np.sin(2 * np.pi * vib * t))
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    fm = VOWELS.get(vowel, VOWELS["a"])
+    out = np.zeros(n, dtype=np.float32)
+    for h in range(1, 40):
+        fh = h * f0
+        if fh > 5500:
+            break
+        amp = sum(np.exp(-0.5 * ((fh - c) / bw) ** 2) for c, bw in zip(fm, (110, 160, 260))) / h ** 0.6
+        out += (amp * np.sin(h * ph)).astype(np.float32)
+    env = np.minimum(1.0, t / attack) * np.minimum(1.0, (dur - t) / release).clip(0, 1)
+    peak = float(np.max(np.abs(out))) or 1.0
+    return (out / peak * env * vol).astype(np.float32)
+
+
+def block():
+    n = int(0.06 * SR)
+    t = np.arange(n) / SR
+    return ((np.sin(2 * np.pi * 1500 * t) * np.exp(-t * 70) + 0.5 * np.sin(2 * np.pi * 900 * t) * np.exp(-t * 55)) * 0.7).astype(np.float32)
+
+
+def shaker(seed=3):
+    n = int(0.07 * SR)
+    noise = np.random.default_rng(seed).standard_normal(n) * np.exp(-np.arange(n) / SR * 60)
+    return ((noise - np.concatenate(([0.0], noise[:-1]))) * 0.3).astype(np.float32)
+
+
+def _more_sfx(name, seed):
+    rng = np.random.default_rng(seed + 11)
+    if name == "crack":
+        buf = np.zeros(int(0.3 * SR), dtype=np.float32)
+        for k, off in enumerate((0.0, 0.07, 0.15)):
+            n = int(0.05 * SR)
+            noise = rng.standard_normal(n) * np.exp(-np.arange(n) / SR * 90)
+            hp = noise - np.concatenate(([0.0], noise[:-1]))
+            put(buf, (hp * 0.5).astype(np.float32), off * SR)
+            put(buf, tone(180 + 40 * k, 0.06, "sine", 45, 0.35), off * SR)
+        return buf
+    if name == "giggle":
+        buf = np.zeros(int(0.7 * SR), dtype=np.float32)
+        base = 560 + 90 * rng.random()
+        for k in range(3):
+            put(buf, voice_synth(base * (1 + 0.07 * k), 0.1, "e", vib=0, vol=0.55, attack=0.01, release=0.05), (0.02 + k * 0.16) * SR)
+        return buf
+    if name == "stomp":
+        n = int(0.2 * SR)
+        t = np.arange(n) / SR
+        f = 48 + 50 * np.exp(-t * 20)
+        return (np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 16) * 0.8).astype(np.float32)
+    if name == "munch":
+        buf = np.zeros(int(0.3 * SR), dtype=np.float32)
+        for off in (0.0, 0.11):
+            n = int(0.08 * SR)
+            noise = np.convolve(rng.standard_normal(n), np.ones(6) / 6, mode="same") * np.exp(-np.arange(n) / SR * 38)
+            put(buf, (noise * 0.9).astype(np.float32), off * SR)
+        return buf
+    if name == "flap":
+        n = int(0.22 * SR)
+        t = np.arange(n) / SR
+        noise = np.convolve(rng.standard_normal(n), np.ones(30) / 30, mode="same")
+        return (noise * np.sin(np.pi * t / 0.22) ** 2 * 1.4).astype(np.float32)
+    if name == "bloop":
+        n = int(0.14 * SR)
+        t = np.arange(n) / SR
+        f = 280 + 420 * (t / 0.14)
+        return (np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 14) * 0.6).astype(np.float32)
     raise ValueError(name)
