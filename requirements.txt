@@ -1,8 +1,8 @@
 requests
 numpy
 Pillow
+edge-tts
 piper-tts==1.2.0
 google-api-python-client
 google-auth
 google-auth-oauthlib
-google-genai

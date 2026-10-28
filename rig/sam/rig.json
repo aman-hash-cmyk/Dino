@@ -1,0 +1,58 @@
+{
+  "order": [
+    {
+      "layer": "plates",
+      "pivot": [
+        300,
+        340
+      ],
+      "param": "plates"
+    },
+    {
+      "layer": "tail",
+      "pivot": [
+        420,
+        430
+      ],
+      "param": "tail"
+    },
+    {
+      "layer": "legs"
+    },
+    {
+      "layer": "body"
+    },
+    {
+      "layer": "armL",
+      "pivot": [
+        170,
+        418
+      ],
+      "param": "armL"
+    },
+    {
+      "layer": "armR",
+      "pivot": [
+        430,
+        418
+      ],
+      "param": "armR"
+    },
+    {
+      "group": "head",
+      "pivot": [
+        300,
+        350
+      ],
+      "param": "head",
+      "members": [
+        "head_back",
+        "head",
+        "eyes",
+        "brows",
+        "mouth",
+        "head_front"
+      ]
+    }
+  ]
+}

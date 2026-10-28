@@ -25,6 +25,11 @@
         "model": "en_US-libritts_r-medium",
         "speaker": 21,
         "length_scale": 1.05
+      },
+      "edge": {
+        "voice": "en-US-GuyNeural",
+        "rate": "-4%",
+        "pitch": "-8Hz"
       }
     },
     "trixie": {
@@ -37,6 +42,11 @@
         "model": "en_US-libritts_r-medium",
         "speaker": 150,
         "length_scale": 1.0
+      },
+      "edge": {
+        "voice": "en-US-AriaNeural",
+        "rate": "+0%",
+        "pitch": "+0Hz"
       }
     },
     "sam": {
@@ -49,6 +59,11 @@
         "model": "en_US-libritts_r-medium",
         "speaker": 300,
         "length_scale": 1.2
+      },
+      "edge": {
+        "voice": "en-US-EricNeural",
+        "rate": "-14%",
+        "pitch": "-4Hz"
       }
     },
     "pip": {
@@ -61,6 +76,11 @@
         "model": "en_US-libritts_r-medium",
         "speaker": 450,
         "length_scale": 0.9
+      },
+      "edge": {
+        "voice": "en-US-AnaNeural",
+        "rate": "+8%",
+        "pitch": "+10Hz"
       }
     },
     "dina": {
@@ -73,6 +93,11 @@
         "model": "en_US-libritts_r-medium",
         "speaker": 600,
         "length_scale": 1.0
+      },
+      "edge": {
+        "voice": "en-US-JennyNeural",
+        "rate": "+2%",
+        "pitch": "+4Hz"
       }
     }
   },
@@ -106,6 +131,7 @@
     "style": [
       "Write like a hit preschool show: warm, funny, musical and full of energy. Very short lines (mostly under 12 words) and simple words a 4-year-old knows. Write AT LEAST 34 lines in total so the episode lasts about 3 minutes.",
       "Use sound words and rhythm ('Stomp, stomp, stomp!', 'Whoosh!', 'Splash!') and phrases kids can repeat. Repeat the key fact word several times.",
+      "Show intonation with punctuation and spelling: '!' for excitement, '?' for questions, '...' for a dramatic or sleepy pause, stretched words ('sooo big', 'wooow'), sound words ('Stomp! Stomp!'), and short exclamations ('Oh!', 'Yay!', 'Hmm...'). Vary line length: mix one-word reactions with short sentences.",
       "Make it INTERACTIVE: include AT LEAST 4 moments (never more than 6) where a character asks the viewer to do or answer something simple ('Can you roar like Rexy?', 'Let us count the eggs: 1, 2, 3!', 'Which one is the leaf?'). On exactly those lines set pause to 3 (seconds of waiting). The NEXT line must warmly react to the viewer ('Great roaring!', 'You are so smart!').",
       "Tell a tiny story: a small, friendly problem, the friends solve it with teamwork and kindness, and one funny moment (Sam napping at the wrong time, Pip asking 'why?', Rexy tripping over his tail).",
       "Give every line an emotion: happy, excited, surprised or silly. Use 'surprised' and 'excited' for discoveries and big moments, 'silly' for jokes.",

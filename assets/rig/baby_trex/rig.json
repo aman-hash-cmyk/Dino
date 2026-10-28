@@ -1,0 +1,53 @@
+{
+  "order": [
+    {
+      "layer": "tail",
+      "pivot": [
+        418,
+        430
+      ],
+      "param": "tail"
+    },
+    {
+      "layer": "legs"
+    },
+    {
+      "layer": "body"
+    },
+    {
+      "layer": "armL",
+      "pivot": [
+        190,
+        420
+      ],
+      "param": "armL"
+    },
+    {
+      "layer": "armR",
+      "pivot": [
+        410,
+        420
+      ],
+      "param": "armR"
+    },
+    {
+      "group": "head",
+      "pivot": [
+        300,
+        395
+      ],
+      "param": "head",
+      "members": [
+        "head_back",
+        "head",
+        "eyes",
+        "mouth",
+        "head_front"
+      ]
+    }
+  ],
+  "boost": [
+    1.05,
+    1.03
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "order": [
+    {
+      "layer": "wingL",
+      "pivot": [
+        205,
+        385
+      ],
+      "param": "armL"
+    },
+    {
+      "layer": "wingR",
+      "pivot": [
+        395,
+        385
+      ],
+      "param": "armR"
+    },
+    {
+      "layer": "legs"
+    },
+    {
+      "layer": "body"
+    },
+    {
+      "group": "head",
+      "pivot": [
+        300,
+        395
+      ],
+      "param": "head",
+      "members": [
+        "head_back",
+        "head",
+        "eyes",
+        "mouth",
+        "head_front"
+      ]
+    }
+  ],
+  "boost": [
+    1.05,
+    1.03
+  ]
+}
