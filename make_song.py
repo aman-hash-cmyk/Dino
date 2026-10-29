@@ -54,14 +54,15 @@ def main():
 
     rot = (ep_no - 1) % 5                                     # a different dino starts each day, scenery changes too
     base = song_audio.SPECIES[rot:] + song_audio.SPECIES[:rot]
-    order, bpms = [], []
-    for r in range(rounds):                                   # round 2 plays the dinos backwards, a bit faster
+    order, kinds, bpms = [], [], []
+    for r in range(rounds):                                   # round 1 counts up (with action chants), round 2 counts down
         names = base if r % 2 == 0 else base[::-1]
         order += names
+        kinds += ["up" if r % 2 == 0 else "down"] * len(names)
         bpms += [108 + 10 * r] * len(names)
 
     print(f"Making counting song #{ep_no}: {len(order)} verses")
-    tl = song_audio.build(ep_dir, order, bpms, args.mock, bg_offset=rot)
+    tl = song_audio.build(ep_dir, order, kinds, bpms, args.mock, bg_offset=rot, seed=ep_no)
     song_video.build(ep_dir)
     song_video.thumbnail(ep_dir, tl)
 

@@ -15,7 +15,7 @@ from PIL import Image, ImageEnhance
 
 RIG_DIR = Path(__file__).resolve().parent / "assets" / "rig"
 DEFAULT = dict(mouth="closed", eyes="open", brows="norm", head=0.0, head_dy=0.0,
-               armL=0.0, armR=0.0, tail=0.0, plates=0.0)
+               armL=0.0, armR=0.0, tail=0.0, plates=0.0, look_x=0.0, look_y=0.0)
 COLOR_BOOST, BRIGHT_BOOST = 1.18, 1.05          # vibrant, bright colours
 
 
@@ -99,7 +99,7 @@ class Rig:
     def compose(self, pose, size):
         p = dict(DEFAULT)
         p.update(pose)
-        nums = {k: int(round(p[k])) for k in ("head", "head_dy", "armL", "armR", "tail", "plates")}
+        nums = {k: int(round(p[k])) for k in ("head", "head_dy", "armL", "armR", "tail", "plates", "look_x", "look_y")}
         key = (size, p["mouth"], p["eyes"], p["brows"]) + tuple(nums.values())
         hit = self._cache.get(key)
         if hit is not None:
@@ -125,7 +125,10 @@ class Rig:
                 for m in item["members"]:
                     name = m if m in L else f"{m}_{p[m]}"
                     if name in L:
-                        g.alpha_composite(L[name].crop(box))
+                        part = L[name].crop(box)
+                        if m == "eyes" and (nums["look_x"] or nums["look_y"]):
+                            part = _shift(part, int(nums["look_x"] * f), int(nums["look_y"] * f))
+                        g.alpha_composite(part)
                 if ang:
                     g = g.rotate(ang, resample=Image.BILINEAR, center=(R, R))
                 _blit(canvas, g, px - R, py - R + int(nums["head_dy"] * f))
