@@ -1560,5 +1560,87 @@
     "url": "https://youtu.be/vu6ZVtNCh5E",
     "privacy": "private",
     "uploaded_at": "2026-11-11T11:35:46Z"
+  },
+  {
+    "episode": 21,
+    "id": "2026-11-12_ep0021",
+    "date": "2026-11-12",
+    "topic": "10 Little Dinosaurs counting song",
+    "title": "10 Little Dinosaurs | Counting Song for Kids",
+    "fact": "Counting from 1 to 10 with five kinds of baby dinosaurs.",
+    "characters": [
+      "bronto",
+      "ptero",
+      "steg",
+      "trex",
+      "tri"
+    ],
+    "format": "song",
+    "segments": [
+      {
+        "segment": "intro",
+        "start": 0.0,
+        "end": 0.0147
+      },
+      {
+        "segment": "stegosaurus",
+        "start": 0.0147,
+        "end": 0.1272
+      },
+      {
+        "segment": "triceratops",
+        "start": 0.1272,
+        "end": 0.2396
+      },
+      {
+        "segment": "pterodactyl",
+        "start": 0.2396,
+        "end": 0.3521
+      },
+      {
+        "segment": "brontosaurus",
+        "start": 0.3521,
+        "end": 0.4646
+      },
+      {
+        "segment": "trex",
+        "start": 0.4646,
+        "end": 0.5771
+      },
+      {
+        "segment": "down_trex",
+        "start": 0.5771,
+        "end": 0.6621
+      },
+      {
+        "segment": "down_brontosaurus",
+        "start": 0.6621,
+        "end": 0.7427
+      },
+      {
+        "segment": "down_pterodactyl",
+        "start": 0.7427,
+        "end": 0.8232
+      },
+      {
+        "segment": "down_triceratops",
+        "start": 0.8232,
+        "end": 0.9038
+      },
+      {
+        "segment": "down_stegosaurus",
+        "start": 0.9038,
+        "end": 0.9844
+      },
+      {
+        "segment": "outro",
+        "start": 0.9844,
+        "end": 1.0
+      }
+    ],
+    "video_id": "1DZ10vb0U1U",
+    "url": "https://youtu.be/1DZ10vb0U1U",
+    "privacy": "private",
+    "uploaded_at": "2026-11-12T11:37:59Z"
   }
 ]
